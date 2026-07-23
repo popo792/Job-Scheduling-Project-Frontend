@@ -35,7 +35,8 @@ function renderJobs(jobs) {
             status.innerHTML = `
                 <div class="next-run">Next Run: ${dateStr}</div>
                 <div class="countdown" id="countdown-${job.id}">Calculating...</div>
-                <button disabled>Activated</button>
+                <!-- Replaced the disabled button with this functional one -->
+                <button class="deactivate-btn" onclick="deactivateJob(${job.id})">Deactivate</button>
             `;
         } else {
             const btn = document.createElement('button');
@@ -91,4 +92,14 @@ function startCountdowns(jobs) {
             element.innerHTML = `T-Minus: ${days}d ${hours}h ${minutes}m ${seconds}s`;
         });
     }, 1000);
+}
+
+function deactivateJob(jobId) {
+    fetch(`/api/deactivate?id=${jobId}`, { method: 'POST' })
+        .then(response => {
+            if (response.ok) {
+                fetchJobs();
+            }
+        })
+        .catch(error => console.error('Error deactivating job:', error));
 }
